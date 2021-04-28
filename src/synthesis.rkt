@@ -12,7 +12,7 @@
             [(minus a b) (cons (- (stack-ref acc a) (stack-ref acc b)) acc)]
             [(times a b) (cons (* (stack-ref acc a) (stack-ref acc b)) acc)]
             [(ite a b c) (cons (if (= (stack-ref acc a) 0) (stack-ref acc c) (stack-ref acc b)) acc)]
-            [(lt a b) (cons (if (< (stack-ref acc a) (stack-ref acc b)) 1 0) acc)]
+            [(slt a b) (cons (if (< (stack-ref acc a) (stack-ref acc b)) 1 0) acc)]
             ))
       ))
 
