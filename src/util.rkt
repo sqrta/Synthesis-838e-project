@@ -13,3 +13,6 @@
   (if (<= n 0) '()
       (local [(define-symbolic* new-one integer?)]
        (cons new-one (symbolic-list (- n 1))))))
+
+(define (push-stack stack item)
+  (cons item stack))

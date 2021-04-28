@@ -3,16 +3,17 @@
 (require "hole.rkt" "lang.rkt" "util.rkt")
 (provide Synth)
 
-(define (interpret prog [acc '()])
-  (if (null? prog) acc
+(define (interpret prog [reg-stack '()])
+  (define (ref index) (stack-ref reg-stack index))
+  (if (null? prog) reg-stack
       (interpret
        (cdr prog)
        (destruct (car prog)
-            [(plus a b) (cons (+ (stack-ref acc a) (stack-ref acc b)) acc)]
-            [(minus a b) (cons (- (stack-ref acc a) (stack-ref acc b)) acc)]
-            [(times a b) (cons (* (stack-ref acc a) (stack-ref acc b)) acc)]
-            [(ite a b c) (cons (if (= (stack-ref acc a) 0) (stack-ref acc c) (stack-ref acc b)) acc)]
-            [(slt a b) (cons (if (< (stack-ref acc a) (stack-ref acc b)) 1 0) acc)]
+            [(plus a b) (push-stack reg-stack (+ (ref a) (ref b)))]
+            [(minus a b) (push-stack reg-stack (- (ref a) (ref b)))]
+            [(times a b) (push-stack reg-stack (* (ref a) (ref b)))]
+            [(ite a b c) (push-stack reg-stack (if (= (ref a) 0) (ref c) (ref b)))]
+            [(slt a b) (push-stack reg-stack (if (< (ref a) (ref b)) 1 0))]
             ))
       ))
 
