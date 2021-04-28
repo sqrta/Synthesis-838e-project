@@ -42,12 +42,12 @@ implements the `max` function. The program takes two inputs. The operands to ins
 
 ### Synthesize
 
-User first need to give the specification, represented by an aribitrary racket function that uses a list of integers as inputs. For example, a `max` function
+The user first needs to give the specification, represented by an arbitrary racket function that uses a list of integers as inputs. For example, a `max` function
 ```
 (define (max-spec x y)
   (if (> x y) x y))
 ```
-Then user specifies a list of instructions `insts` can be used to synthesize the target function and run
+Then the user specifies a list of instructions `insts` can be used to synthesize the target function and run
 ```
 (Synth max-spec insts)
 ```
@@ -59,7 +59,7 @@ We will synthesize a program equivalent with the specified function using allowe
 ; (program 2 (list (slt 2 1) (ite 3 1 2)))  means
 ; => if (y<x) then x else y
 ```
-However, how can we synthesize a `max` function without `if-then-else` instruction `ite`? Suppose we can only use `+, -, *, <` operations where `<` returns 1 if true else 0. Our project figures out a program with 4 instructions.
+However, how can we synthesize a `max` function without the `if-then-else` instruction `ite`? Suppose we can only use `+, -, *, <` operations where `<` returns 1 if true else 0. Our project figures out a program with 4 instructions.
 ```racket
 (define insts2 (list minus plus times slt))
 (Synth max-spec insts2)
