@@ -42,7 +42,7 @@ implements the `max` function. The program takes two inputs. The operands to ins
 
 ### Synthesize
 
-The user first needs to give the specification, represented by an arbitrary racket function that uses a list of integers as inputs. For example, a `max` function
+The user first needs to give the specification, represented by an arbitrary racket function that uses a list of 32-bit integers as inputs. For example, a `max` function
 ```
 (define (max-spec x y)
   (if (> x y) x y))
@@ -63,7 +63,27 @@ However, how can we synthesize a `max` function without the `if-then-else` instr
 ```racket
 (define insts2 (list minus plus times slt))
 (Synth max-spec insts2)
-; (program 2 (list (minus 2 1) (slt 2 1) (times 3 4) (minus 2 5))) 
+; (program 2 (list (minus 2 1) (slt 2 1) (times 3 4) (minus 2 5)))    means
 ; =>  y - (y - x) * (y < x)
 ```
 This program is useful when running `if-then-else` instruction brings higher cost.
+
+Our framework also supports 32-bit integers and can synthesize some more interesting programs. Suppose we want to get a program that given a 32-bit integer **a**, decides whether **a**'s Hamming Weight <=1 (the number of set bits in **a** <= 1). Intuitively, we have to enumerate all bits in **a** with a loop. However, our framework gives a better program, as shown in the result of running `example.rkt`.
+First we give the specification
+
+```racket
+(define (bv-set-length v l)
+  (if (< l 0) 0
+      (+ (if (equal? (bit l v) (bv #b1 1)) 1 0) (bv-set-length v (- l 1)))))
+
+(define (Hamming-weight-le1-spec a)
+  (if (>= 1 (bv-set-length a 31)) (int32 1) (int32 0)))
+```
+The function `Hamming-weight-le1-spec` return 1 if the Hamming Weight if `a` <=1 else 0. Then run
+```racket
+(define inst3 (list bvAnd bvEq bvSub))
+(Synth Hamming-weight-le1-spec inst3 int32?)
+; (program 1 (list (bvSub 1 1) (bvSub 2 1) (bvAnd 1 3) (bvEq 1 4)))   means
+; =>  a&(-a) == a
+```
+For the instruction list, `bvAnd` is a bitwise `&` operator; `bvAdd` is `+` for 32-bit integer; `bvEq(==)` returns 1 if two 32-bit integers are equal. The parameter `int32?` suggests that the program regards an integer as a 32-bit vector. Our framework generates a program without any loop.

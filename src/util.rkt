@@ -9,9 +9,9 @@
 (define (top stack)
   (list-ref stack 0))
 
-(define (symbolic-list n)
+(define (symbolic-list n [type integer?])
   (if (<= n 0) '()
-      (local [(define-symbolic* new-one integer?)]
+      (local [(define-symbolic* new-one type)]
        (cons new-one (symbolic-list (- n 1))))))
 
 (define (push-stack stack item)
