@@ -20,8 +20,9 @@ racket example.rkt
 ```
 will get
 ```racket
-(program 2 (list (slt 2 1) (ite 3 1 2)))
+(program 2 (list (slt 1 2) (ite 3 2 1)))
 (program 2 (list (minus 2 1) (slt 2 1) (times 3 4) (minus 2 5)))
+(program 1 (list (bvSub 1 1) (bvSub 2 1) (bvAnd 1 3) (bvEq 1 4)))
 ```
 
 ## Synthesize a Program
