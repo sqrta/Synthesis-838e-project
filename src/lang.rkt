@@ -1,4 +1,7 @@
 #lang rosette
+
+#| Defines the ops we can use for synthesis. |#
+
 (provide (all-defined-out))
 (struct plus (r1 r2) #:transparent)
 (struct minus (r1 r2) #:transparent)
