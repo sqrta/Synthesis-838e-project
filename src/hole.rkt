@@ -4,6 +4,7 @@
 
 (provide prog??)
 
+
 ;; Conforming to the Villain spec, defines holes for instruction
 ;; symbols by instruction arity.
 (define (inst?? insts)
@@ -15,6 +16,7 @@
             [(2) (constructor r1 r2)]
             [(3) (constructor r1 r2 r3)]))))
 
+;; A program is a list of op symbols.
 (define (prog?? n insts)
  (if (<= n 0)
      (list)
