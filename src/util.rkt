@@ -1,6 +1,9 @@
 #lang rosette
 (provide (all-defined-out))
 
+
+;; Variables in Rosette are available as 'registers' in a
+;; growing stack. These utility functions reflect that.
 (define (stack-ref st ref)
   (if (or (> ref (length st)) (< ref 1))
   (assert #f)

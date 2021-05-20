@@ -4,6 +4,14 @@
 (require "hole.rkt" "lang.rkt" "util.rkt")
 (provide Synth)
 
+
+#|
+This file defines an interpreter for the small language we use and
+contains the definition of the synthesis commands.
+|#
+
+
+;; Interpreter for the int and bitvector instructions based on a register stack.
 (define (interpret prog [reg-stack '()])
   (define (ref index) (stack-ref reg-stack index))
   (if (null? prog) reg-stack
@@ -27,36 +35,34 @@
             ))
       ))
 
+;; Runs a program through the interpreter
 (define (run prog [init '()])
   (match prog
             [(program arity instructions) (top (interpret instructions init))]
-            [_ "Not a program"])
-  )
+            [_ "Not a program"]))
 
-;(define test-prog (program
-;                   2
-;                   (list
-;                   (lt 1 2) (ite 3 2 1))))
-;
-;(run test-prog (list 7 8))
 (define test-prog (program 2 (list (bvSet 2))))
-;(run test-prog (list (bv 1 2) (bv 2 2)))
-  
+
+;; Sets the maximum parse tree depth
 (define max-line 6)
 
+;; Asserts that the specification and interpreted result are the same
+;; on the inputs.
 (define (same spec imple init)
-  (assert (equal? (apply spec init) (run imple init)))
-  )
+  (assert (equal? (apply spec init) (run imple init))))
+
 (define (sum init)
   (apply + init))
 
+
+;; The synthesis command that demands that the synthesized program and the
+;; interpreted program match on all inputs.
 (define (synth-one inputs spec prog)
   (synthesize
    #:forall inputs
    #:guarantee (same spec prog inputs)))
 
 (define (search-fix arity spec lines insts type)
-  ;(display lines)
   (if (> lines max-line) "No solution"
       (let ([prog (program arity (prog?? lines insts))])
         (let ([sol (synth-one (symbolic-list arity type) spec prog)])
@@ -66,7 +72,3 @@
 (define (Synth spec insts [type integer?])
   (define arity (procedure-arity spec))
   (search-fix arity spec 0 insts type))
-
-
-  
-
